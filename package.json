@@ -1,0 +1,16 @@
+{
+  "name": "orange-version-soak-1lj6l",
+  "productName": "orange-version-soak-1lj6l",
+  "description": "My Electron application description",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "minhnie",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "29.1.5"
+  }
+}
