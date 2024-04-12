@@ -1,43 +1,94 @@
-// Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
-const path = require('node:path')
+const { app, BrowserWindow, ipcMain } = require("electron"); 
+const path = require("path"); 
 
-function createWindow () {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
-  })
+let mainWindow; 
 
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+// Function to create independent window or main window 
+function createWindow() { 
+mainWindow = new BrowserWindow({ 
+	width: 800, 
+	height: 600, 
+	// Make sure to add webPreferences with 
+	// nodeIntegration and contextIsolation 
+	webPreferences: { 
+	nodeIntegration: true, 
+	contextIsolation: false, 
+  enableRemoteModule: true,
+	}, 
+	show: false, 
+}); 
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+// Main window loads index.html file 
+mainWindow.loadFile(path.join(__dirname, 'index.html')); 
+
+// To maximize the window 
+mainWindow.maximize(); 
+mainWindow.show(); 
+mainWindow.webContents.openDevTools();
+} 
+
+// Function to create child window of parent one 
+function createChildWindow() { 
+childWindow = new BrowserWindow({ 
+	width: 1000, 
+	height: 700, 
+	modal: true, 
+	show: false, 
+	parent: mainWindow, // Make sure to add parent window here 
+
+	// Make sure to add webPreferences with below configuration 
+	webPreferences: { 
+	nodeIntegration: true, 
+	contextIsolation: false, 
+	enableRemoteModule: true, 
+	}, 
+}); 
+
+// Child window loads settings.html file 
+childWindow.loadFile(path.join(__dirname, 'settings.html')); 
+
+childWindow.webContents.openDevTools();
+
+childWindow.once("ready-to-show", () => { 
+	childWindow.show(); 
+}); 
+} 
+
+ipcMain.on("openChildWindow", (event, arg) => { 
+  createChildWindow(); 
+});
+
+ipcMain.on("closeCurrentWindow", (event, arg) => { 
+  createChildWindow(); 
+});
+
+ipcMain.on("valuesChannel", (event, data) => {
+    console.log(data)
+})
+
+function returnText() {
+  let private_Key = document.getElementById("private_Key").value;
+  let public_Key = document.getElementById("public_Key").value;
+  let ip = document.getElementById("scp_ip").value;
+  response_priv = `Private Key: ${private_Key}!`;
+  response_pub = `Public Key: ${public_Key}!`;
+  response_ip = `IP: ${ip}!`;
+  response = response_priv + '\n' + response_pub + '\n' + response_ip
+  alert(response)
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  createWindow()
+app.whenReady().then(() => { 
+createWindow(); 
 
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
+app.on("activate", () => { 
+	if (BrowserWindow.getAllWindows().length === 0) { 
+	createWindow(); 
+	} 
+}); 
+}); 
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
-})
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+app.on("window-all-closed", () => { 
+if (process.platform !== "darwin") { 
+	app.quit(); 
+} 
+}); 
