@@ -1,16 +1,17 @@
 {
-  "name": "orange-version-soak-1lj6l",
-  "productName": "orange-version-soak-1lj6l",
-  "description": "My Electron application description",
-  "keywords": [],
-  "main": "./main.js",
+  "name": "vipproject_milestone3",
   "version": "1.0.0",
-  "author": "minhnie",
+  "description": "",
+  "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "test": "echo \"Error: no test specified\" && exit 1",
+    
+      "start": "electron ."
+    
   },
-  "dependencies": {},
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "electron": "29.1.5"
+    "electron": "^30.0.0"
   }
 }
