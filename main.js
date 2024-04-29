@@ -69,7 +69,11 @@ const template = [
                     add_response = add_response_priv + '\n' + add_response_pub + '\n' + add_response_ip + '\n' + add_response_userid + '\n' + add_response_storageid
                     alert(add_response)
                   }
+                  addstoragewindow.on('closed', function(){
+                    app.quit();
+                  });
               }
+               
              },                            
             { label: 'List Storage',
             click() {
@@ -91,6 +95,9 @@ const template = [
                 // To maximize the window 
                 liststoragewindow.maximize(); 
                 liststoragewindow.show(); 
+                liststoragewindow.on('closed', function(){
+                  app.quit();
+                });
               }
          },               
             { label: 'Browse Files',
@@ -113,6 +120,9 @@ const template = [
                 // To maximize the window 
                 browsefileswindow.maximize(); 
                 browsefileswindow.show(); 
+                browsefileswindow.on('closed', function(){
+                  app.quit();
+                });
               }
         },         
             { label: 'Copy Files',
@@ -145,14 +155,23 @@ const template = [
                     response = response_priv + '\n' + response_pub + '\n' + response_ip
                     alert(response)
                   }
+                  copyfileswindow.on('closed', function(){
+                    app.quit();
+                  });
               }
         }         
                          
                        ]
     }
+
 ]
 
+if (process.platform == 'darwin') {
+  template.unshift({});
+}
 const mainmenu = Menu.buildFromTemplate(template);
+
+
 
 app.whenReady().then(() => { 
     createWindow(); 
@@ -168,4 +187,4 @@ app.whenReady().then(() => {
     if (process.platform !== "darwin") { 
         app.quit(); 
     } 
-    });  
+    });    
